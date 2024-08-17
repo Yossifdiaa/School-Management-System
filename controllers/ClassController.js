@@ -1,56 +1,56 @@
-// const Class = require('../models/ClassSchema');
+const Class = require('../models/ClassSchema');
 
-// exports.createClass = async (req, res) => {
-//   try {
-//     const class = new Class(req.body);
-//     await class.save();
-//     res.status(201).send(class);
-//   } catch (error) {
-//     res.status(400).send(error);
-//   }
-// };
+exports.createClass = async (req, res) => {
+  try {
+    const classInschool = new Class(req.body);
+    await classInschool.save();
+    res.status(201).json(classInschool);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
 
-// exports.getClasses = async (req, res) => {
-//   try {
-//     const classes = await Class.find().populate('students').populate('teachers').populate('subjects');
-//     res.status(200).send(classes);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+exports.getClasses = async (req, res) => {
+  try {
+    const classes = await Class.find();
+    res.status(200).json(classes);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
 
-// exports.getClass = async (req, res) => {
-//   try {
-//     const class = await Class.findById(req.params.id).populate('students').populate('teachers').populate('subjects');
-//     if (!class) {
-//       return res.status(404).send();
-//     }
-//     res.status(200).send(class);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+exports.getClass = async (req, res) => {
+  try {
+    const classInschool = await Class.findById(req.params.id);
+    if (!classInschool) {
+      return res.status(404).json("not found");
+    }
+    res.status(200).json(classInschool);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
 
-// exports.updateClass = async (req, res) => {
-//   try {
-//     const class = await Class.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-//     if (!class) {
-//       return res.status(404).send();
-//     }
-//     res.status(200).send(class);
-//   } catch (error) {
-//     res.status(400).send(error);
-//   }
-// };
+exports.updateClass = async (req, res) => {
+  try {
+    const classInschool = await Class.findByIdAndUpdate(req.params.id, req.body);
+    if (!classInschool) {
+      return res.status(404).json("not found");
+    }
+    res.status(200).json(classInschool);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
 
-// exports.deleteClass = async (req, res) => {
-//   try {
-//     const class = await Class.findByIdAndDelete(req.params.id);
-//     if (!class) {
-//       return res.status(404).send();
-//     }
-//     res.status(200).send(class);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// };
+exports.deleteClass = async (req, res) => {
+  try {
+    const classInschool = await Class.findByIdAndDelete(req.params.id);
+    if (!classInschool) {
+      return res.status(404).json("not found and can't delete");
+    }
+    res.status(200).json(classInschool);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
