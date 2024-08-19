@@ -1,14 +1,56 @@
 const User = require('../models/UserSchema');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
-exports.createUser = async (req, res) => {
-    try {
-      const user = new User(req.body);
+exports.signUpUser = async (req, res) => {
+    try { 
+      const email = req.body.email;
+      const password = req.body.password;
+      const role = req.body.role;
+
+      const hashedPassword = await bcrypt.hash(password , 10);
+
+      const user = new User({
+        email : email,
+        password : hashedPassword,
+        role : role
+      });
       await user.save();
       res.status(201).json(user);
       console.log('new user created :' , user);
     } catch (error) {
       res.status(400).json(error);
+    }
+  };
+
+
+  exports.signInUser = async (req , res) => {
+    try {
+      const { email, password } = req.body;
+      const existingUser = await User.findOne({ email });
+  
+      if (!existingUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      const isMatch = await bcrypt.compare(password, existingUser.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Invalid credentials' });
+      }
+  
+      // Generate a JWT token
+      const token = jwt.sign(
+        { id: existingUser._id, email: existingUser.email },
+        'supersupersecret', // Replace with your JWT secret key
+        { expiresIn: '1h' }
+      );
+  
+      // Return the signed JWT token
+      res.status(200).json({ token, user: existingUser });
+      console.log('User signed in:', existingUser);
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
     }
   };
   
